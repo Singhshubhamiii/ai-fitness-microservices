@@ -17,6 +17,7 @@ class Activity {
  public String getId(){return id;} public String getUserId(){return userId;} public void setUserId(String v){userId=v;} public String getType(){return type;} public void setType(String v){type=v;} public double getDurationMinutes(){return durationMinutes;} public void setDurationMinutes(double v){durationMinutes=v;} public double getCaloriesBurned(){return caloriesBurned;} public void setCaloriesBurned(double v){caloriesBurned=v;} public Instant getCreatedAt(){return createdAt;}
 }
 interface ActivityRepository extends MongoRepository<Activity,String>{List<Activity> findByUserIdOrderByCreatedAtDesc(String userId);}
+@CrossOrigin(origins="http://localhost:5173")
 @RestController @RequestMapping("/api/activities")
 class ActivityApi {
  private final ActivityRepository repo; private final KafkaTemplate<String,String> kafka; private final ObjectMapper mapper;
