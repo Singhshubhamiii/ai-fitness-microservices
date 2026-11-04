@@ -1,0 +1,2 @@
+# Config Server
+Spring Cloud Config Server using the native filesystem profile on port 8888. Place sanitized application configuration files in ./config-repo. Never store secrets in this directory; use environment variables or a secrets manager.
