@@ -1,0 +1,2 @@
+# API Gateway
+Spring Cloud Gateway routes /users/**, /activities/** and /recommendations/** to Eureka-discovered services. JWT validation uses Keycloak issuer URI configured by KEYCLOAK_ISSUER_URI. Local port: 8080. Configure a Keycloak realm and client before authenticated use.
