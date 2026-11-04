@@ -38,6 +38,7 @@ class ActivityConsumer {
  @KafkaListener(topics="fitness.activity-events",groupId="fitness-ai")
  void receive(String event)throws Exception{JsonNode n=mapper.readTree(event);String id=n.path("id").asText();if(id.isBlank())return;repo.save(new Recommendation(id,n.path("userId").asText(),gemini.generate(event)));}
 }
+@CrossOrigin(origins="http://localhost:5173")
 @RestController @RequestMapping("/api/recommendations")
 class RecommendationApi {
  private final RecommendationRepository repo; RecommendationApi(RecommendationRepository repo){this.repo=repo;}
