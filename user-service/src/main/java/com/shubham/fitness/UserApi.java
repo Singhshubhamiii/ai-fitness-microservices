@@ -13,7 +13,7 @@ class UserProfile {
  @Email @NotBlank @Column(unique=true) String email;
  @Min(1) @Max(120) Integer age;
  public UserProfile(){}
- public Long getId(){return id;} public String getName(){return name;} public String getEmail(){return email;} public Integer getAge(){return age;}
+ public Long getId(){return id;} public String getName(){return name;} public void setName(String v){name=v;} public String getEmail(){return email;} public void setEmail(String v){email=v;} public Integer getAge(){return age;} public void setAge(Integer v){age=v;}
 }
 interface UserRepository extends JpaRepository<UserProfile,Long>{}
 @RestController @RequestMapping("/api/users")
