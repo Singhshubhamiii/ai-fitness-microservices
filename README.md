@@ -2,12 +2,12 @@
 
 Independent Spring Boot microservices learning project covering user profiles, activity tracking, asynchronous AI recommendations, Eureka discovery, centralized configuration, API Gateway, Keycloak OAuth2 and Google Gemini.
 
-> **Status:** Initial backend source-code milestone. This is not yet a production-ready or fully integration-tested deployment. The React/Redux frontend, Keycloak realm provisioning, end-to-end tests, event retry/dead-letter handling and production hardening remain to be completed.
+> **Status:** Initial backend source-code milestone. This is not yet a production-ready or fully integration-tested deployment. Keycloak realm provisioning, end-to-end tests, event retry/dead-letter handling and production hardening remain to be completed.
 
 ## Architecture
 ```mermaid
 flowchart TB
- UI[React / Redux - planned] --> GW[Spring Cloud Gateway]
+ UI[React dashboard] --> GW[Spring Cloud Gateway]
  GW --> KC[Keycloak OAuth2]
  GW --> U[User Service]
  GW --> A[Activity Service]
@@ -49,7 +49,7 @@ Run each module with `mvn spring-boot:run` from its directory. Configure MySQL, 
 `MYSQL_URL`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MONGODB_URI`, `KAFKA_BOOTSTRAP_SERVERS`, `EUREKA_URL`, `KEYCLOAK_ISSUER_URI`, `GEMINI_API_KEY`, `GEMINI_MODEL`. Never commit credentials.
 
 ## Current scope and limitations
-Initial backend service boundaries and code are provided. Configure a Keycloak realm/client and verify issuer claims before using the secured gateway. Local direct service ports are exposed for development. Add service-to-service authorization, idempotent event processing, retries/DLT, observability, integration tests and deployment configuration before production use. The React UI is not yet implemented.
+Initial backend service boundaries and code are provided. Configure a Keycloak realm/client and verify issuer claims before using the secured gateway. Local direct service ports are exposed for development. The basic Vite + React dashboard in `frontend/` supports activity creation and recommendation lookup. Redux, user registration and Keycloak login in the UI remain future work. Add service-to-service authorization, idempotent event processing, retries/DLT, observability, integration tests and deployment configuration before production use. The React UI is not yet implemented.
 
 ## Learning reference
 Course shown in project brief: https://www.youtube.com/watch?v=nJyfLqFpbp4. This repository is an independent implementation of the course's technologies and project ideas, not a copy of instructor source code.
