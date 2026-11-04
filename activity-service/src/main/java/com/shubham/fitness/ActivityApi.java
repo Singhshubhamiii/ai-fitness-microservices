@@ -14,7 +14,7 @@ import java.util.List;
 @Document("activities")
 class Activity {
  @Id String id; @NotBlank String userId; @NotBlank String type; @Positive double durationMinutes; @PositiveOrZero double caloriesBurned; Instant createdAt=Instant.now();
- public String getId(){return id;} public String getUserId(){return userId;} public String getType(){return type;} public double getDurationMinutes(){return durationMinutes;} public double getCaloriesBurned(){return caloriesBurned;} public Instant getCreatedAt(){return createdAt;}
+ public String getId(){return id;} public String getUserId(){return userId;} public void setUserId(String v){userId=v;} public String getType(){return type;} public void setType(String v){type=v;} public double getDurationMinutes(){return durationMinutes;} public void setDurationMinutes(double v){durationMinutes=v;} public double getCaloriesBurned(){return caloriesBurned;} public void setCaloriesBurned(double v){caloriesBurned=v;} public Instant getCreatedAt(){return createdAt;}
 }
 interface ActivityRepository extends MongoRepository<Activity,String>{List<Activity> findByUserIdOrderByCreatedAtDesc(String userId);}
 @RestController @RequestMapping("/api/activities")
