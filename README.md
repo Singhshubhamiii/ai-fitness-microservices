@@ -1,72 +1,58 @@
-# AI-Powered Fitness Microservices Application
+# AI-Powered Fitness Microservices
 
-> **Repository status: documentation scaffold.** This repository currently contains project documentation and structure placeholders, not a verified runnable implementation. Add and test the actual application source before describing it as complete.
+Independent Spring Boot microservices learning project covering user profiles, activity tracking, asynchronous AI recommendations, Eureka discovery, centralized configuration, API Gateway, Keycloak OAuth2 and Google Gemini.
 
-## Overview
-An AI-powered fitness application concept organized around User, Activity, and AI Recommendation services. The project scope described for this repository includes service discovery with Eureka, centralized configuration, Spring Cloud Gateway, OAuth 2.0 authentication with Keycloak, RabbitMQ event processing, and fitness recommendations generated using the Google Gemini API. The described data layer uses MySQL and MongoDB, with a React and Redux frontend.
+> **Status:** Initial backend source-code milestone. This is not yet a production-ready or fully integration-tested deployment. The React/Redux frontend, Keycloak realm provisioning, end-to-end tests, event retry/dead-letter handling and production hardening remain to be completed.
 
-## Planned capabilities
-- User, Activity, and AI Recommendation microservices.
-- Service discovery with Netflix Eureka.
-- Centralized configuration with Spring Cloud Config Server.
-- API routing through Spring Cloud Gateway.
-- OAuth 2.0 authentication using Keycloak.
-- Asynchronous activity-event processing with RabbitMQ.
-- AI-generated fitness recommendations using the Google Gemini API.
-- MySQL and MongoDB persistence.
-- React and Redux frontend.
-
-## Technology stack
-**Backend:** Java, Spring Boot, Spring Cloud  
-**Service infrastructure:** Eureka, Config Server, Spring Cloud Gateway  
-**Security:** OAuth 2.0, Keycloak  
-**Messaging / AI:** RabbitMQ, Google Gemini API  
-**Databases:** MySQL, MongoDB  
-**Frontend:** React, Redux
-
-## Repository structure
-```text
-ai-fitness-microservices/
-├── services/
-│   ├── user-service/
-│   ├── activity-service/
-│   └── ai-recommendation-service/
-├── infrastructure/
-│   ├── service-registry/
-│   ├── config-server/
-│   └── api-gateway/
-├── frontend/
-├── docs/
-│   ├── architecture.md
-│   └── api-documentation.md
-└── .github/ISSUE_TEMPLATE/
+## Architecture
+```mermaid
+flowchart TB
+ UI[React / Redux - planned] --> GW[Spring Cloud Gateway]
+ GW --> KC[Keycloak OAuth2]
+ GW --> U[User Service]
+ GW --> A[Activity Service]
+ A -->|activity event| K[(Kafka)]
+ K --> AI[AI Recommendation Service]
+ AI --> G[Gemini API]
+ U --> DB1[(MySQL)]
+ A --> DB2[(MongoDB)]
+ AI --> DB2
+ R[Eureka Registry]
+ C[Config Server]
 ```
 
-The directories are placeholders for the corresponding real modules. Populate them only with verified source code and configuration.
+## Modules
+- `user-service`: REST profile API backed by MySQL/JPA.
+- `activity-service`: activity API backed by MongoDB; publishes Kafka events.
+- `ai-service`: consumes activity events, calls Gemini, stores recommendations.
+- `service-registry`: Eureka server.
+- `config-server`: Spring Cloud Config native profile.
+- `api-gateway`: Spring Cloud Gateway routes and OAuth2 JWT validation.
 
-## Documentation
-- [Architecture overview](docs/architecture.md)
-- [API documentation template](docs/api-documentation.md)
-- [User service notes](services/user-service/README.md)
-- [Activity service notes](services/activity-service/README.md)
-- [AI recommendation service notes](services/ai-recommendation-service/README.md)
-- [Infrastructure notes](infrastructure/)
+## Stack
+Java 21, Spring Boot 3.4, Spring Cloud 2024, Eureka, Config Server, Gateway, Spring Security OAuth2 Resource Server, Keycloak, Kafka, MySQL, MongoDB, Gemini API, Maven.
 
-## Setup
-Verified build commands, service ports, startup order, database initialization, and frontend instructions will be added after the actual source code and configuration are committed.
+## Local infrastructure
+Prerequisites: JDK 21, Maven 3.9+, Docker Desktop.
+```bash
+docker compose up -d
+```
+Run each module with `mvn spring-boot:run` from its directory. Configure MySQL, MongoDB, Kafka and Keycloak issuer variables. See module READMEs.
 
-## Security
-Keep Gemini API keys, Keycloak client secrets, database credentials, broker credentials, and access tokens out of Git. Provide sanitized example configuration and document required environment variables without real values.
+## API
+- User: GET/POST `/api/users`; GET `/api/users/{id}`.
+- Activity: GET/POST `/api/activities`; optional `?userId=`.
+- AI: GET `/api/recommendations/{activityId}` after event processing.
+- Gateway routes: `/users/**`, `/activities/**`, `/recommendations/**`.
 
-## Project checklist
-- [x] Repository documentation and structure scaffold
-- [ ] Add actual Spring Boot microservice source code
-- [ ] Add and verify Eureka, Config Server, and Gateway configuration
-- [ ] Add Keycloak / OAuth 2.0 configuration
-- [ ] Add RabbitMQ exchanges, queues, and event definitions
-- [ ] Add Gemini integration and safe example configuration
-- [ ] Add React / Redux source code
-- [ ] Add tests, verified API documentation, and run instructions
+## Environment
+`MYSQL_URL`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MONGODB_URI`, `KAFKA_BOOTSTRAP_SERVERS`, `EUREKA_URL`, `KEYCLOAK_ISSUER_URI`, `GEMINI_API_KEY`, `GEMINI_MODEL`. Never commit credentials.
 
-## Note
-The architecture and feature descriptions are planning documentation based on the project summary. They do not imply that the integrations are already implemented or runnable.
+## Current scope and limitations
+Initial backend service boundaries and code are provided. Configure a Keycloak realm/client and verify issuer claims before using the secured gateway. Local direct service ports are exposed for development. Add service-to-service authorization, idempotent event processing, retries/DLT, observability, integration tests and deployment configuration before production use. The React UI is not yet implemented.
+
+## Learning reference
+Course shown in project brief: https://www.youtube.com/watch?v=nJyfLqFpbp4. This repository is an independent implementation of the course's technologies and project ideas, not a copy of instructor source code.
+
+## License
+MIT
