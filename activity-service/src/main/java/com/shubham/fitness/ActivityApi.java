@@ -1,4 +1,6 @@
 package com.shubham.fitness;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.data.annotation.Id;
@@ -17,8 +19,8 @@ class Activity {
 interface ActivityRepository extends MongoRepository<Activity,String>{List<Activity> findByUserIdOrderByCreatedAtDesc(String userId);}
 @RestController @RequestMapping("/api/activities")
 class ActivityApi {
- private final ActivityRepository repo; private final KafkaTemplate<String,Activity> kafka;
- ActivityApi(ActivityRepository repo,KafkaTemplate<String,Activity> kafka){this.repo=repo;this.kafka=kafka;}
+ private final ActivityRepository repo; private final KafkaTemplate<String,String> kafka; private final ObjectMapper mapper;
+ ActivityApi(ActivityRepository repo,KafkaTemplate<String,String> kafka,ObjectMapper mapper){this.repo=repo;this.kafka=kafka;this.mapper=mapper;}
  @GetMapping List<Activity> all(@RequestParam(required=false) String userId){return userId==null?repo.findAll():repo.findByUserIdOrderByCreatedAtDesc(userId);}
- @PostMapping @ResponseStatus(HttpStatus.CREATED) Activity create(@Valid @RequestBody Activity a){Activity saved=repo.save(a);kafka.send("fitness.activity-events",saved.id,saved);return saved;}
+ @PostMapping @ResponseStatus(HttpStatus.CREATED) Activity create(@Valid @RequestBody Activity a) throws JsonProcessingException {Activity saved=repo.save(a);kafka.send("fitness.activity-events",saved.id,mapper.writeValueAsString(saved));return saved;}
 }
